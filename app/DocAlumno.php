@@ -17,7 +17,15 @@ class DocAlumno extends Model
     }
 
     //Mass Assignment
-    protected $fillable = ['name', 'doc_obligatorio', '', 'usu_alta_id', 'usu_mod_id'];
+    protected $fillable = [
+        'name',
+        'doc_obligatorio',
+        'usu_alta_id',
+        'usu_mod_id',
+        'bnd_portal_alumnos',
+        'bnd_pdf',
+        'bnd_imagen'
+    ];
 
     public function usu_alta()
     {

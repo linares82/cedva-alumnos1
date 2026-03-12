@@ -2,14 +2,41 @@
 
 @section('content')
 
+<style>
+* {
+  box-sizing: border-box;
+}
+
+.zoom {
+  transition: transform .2s;
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  z-index: 100;
+}
+
+.zoom:hover {
+  -ms-transform: scale(2); /* IE 9 */
+  -webkit-transform: scale(2); /* Safari 3-8 */
+  transform: scale(2);
+  z-index:100;
+}
+</style>
+
 <div class="box-body">
-    <div class="col-md-12 alert alert-block alert-success">
-    *Todos los documentos obligatorios deben ser cargados, sin excepción antes de 90 dias naturales despues de su inscripcion o se iterrumpira la captura de asistencais y calificaciones.</br>
-    **La carga de los documentos opcionales seran indicados por el personal de control escolar.</br>
-    ***Los archivos cargados deben ser optimizados en archivo pdf.
+    <div class="col-md-3"></div>
+        <div class="zoom col-md-6" style="align:">
+            <img src="{{asset('img/reglas_carga_docs.jpeg')}}"  alt="instrucciones_carga_documentos" style="align: center; width: auto; height: 250px;">
+        </div>
+    <div class="col-md-3"></div>
+    @if (!is_null($cliente->obs_docs) or strlen($cliente->obs_docs)>0)
+    <div class="col-md-12 alert alert-block alert-danger">
+        {{ $cliente->obs_docs }}
     </div>
+    @endif
 
     <div class="form-group col-md-12">
+
         <table class="table table-condensed table-striped">
             <thead>
                 <tr>
@@ -18,6 +45,11 @@
             </thead>
             <tbody>
                 @foreach($cliente->pivotDocCliente as $doc)
+
+                @if($doc->docAlumno->bnd_portal_alumnos==1)
+                @php
+                    //dd($doc->docAlumno);
+                @endphp
                 <tr>
                     <td>
                         {{$doc->docAlumno->name}}
@@ -41,12 +73,34 @@
                         @endif
 
                             <div id="div_archivo{{ $doc->id }}">
-                            <div class="btn btn-xs btn-file">
-                                <i class="fa fa-paperclip"></i> Seleccionar Archivo
-                                <input type="file"  id="file{{ $doc->id }}" accept=".pdf" name="file" class="cliente_archivo" >
-                                <input type="hidden" name="_token" id="_token"  value="<?= csrf_token(); ?>">
-                                <input type="hidden"  id="file_hidden" name="file_hidden" >
-                            </div>
+                            @if($doc->docAlumno->bnd_pdf==1)
+                                <div class="btn btn-xs btn-file">
+                                    <i class="fa fa-paperclip"></i> Seleccionar Archivo PDF
+                                    <input type="file"  id="file{{ $doc->id }}"
+                                    accept=".pdf"
+                                    name="file" class="cliente_archivo" >
+                                    <input type="hidden" name="_token" id="_token"  value="<?= csrf_token(); ?>">
+                                    <input type="hidden"  id="file_hidden" name="file_hidden" >
+                                </div>
+                            @elseif($doc->docAlumno->bnd_imagen==1)
+                                <div class="btn btn-xs btn-file">
+                                    <i class="fa fa-paperclip"></i> Seleccionar Archivo Imagen
+                                    <input type="file"  id="file{{ $doc->id }}"
+                                    accept="image/jpg, image/jpeg"
+                                    name="file" class="cliente_archivo" >
+                                    <input type="hidden" name="_token" id="_token"  value="<?= csrf_token(); ?>">
+                                    <input type="hidden"  id="file_hidden" name="file_hidden" >
+                                </div>
+                            @else
+                                <div class="btn btn-xs btn-file">
+                                    <i class="fa fa-paperclip"></i> Seleccionar Archivo
+                                    <input type="file"  id="file{{ $doc->id }}"
+                                    name="file" class="cliente_archivo" >
+                                    <input type="hidden" name="_token" id="_token"  value="<?= csrf_token(); ?>">
+                                    <input type="hidden"  id="file_hidden" name="file_hidden" >
+                                </div>
+                            @endif
+
                             <button class="btn btn-success btn-xs btn_archivo" id="btn_archivo{{ $doc->id }}"
                                 data-doc_id="{{ $doc->doc_alumno_id }}"
                                 data-documento='{{ $doc->id }}'>
@@ -61,6 +115,7 @@
 
                     </td>
                 </tr>
+                @endif
                 @endforeach
             </tbody>
         </table>

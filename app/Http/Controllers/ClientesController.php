@@ -93,10 +93,12 @@ class ClientesController extends Controller
         //dd($cliente);
 
 
-        $doc_existentes = DB::table('pivot_doc_clientes as pde')->select('doc_alumno_id')
+        $doc_existentes = DB::table('pivot_doc_clientes as pde')
+            ->select('doc_alumno_id')
             ->join('clientes as c', 'c.id', '=', 'pde.cliente_id')
             ->where('c.id', '=', $cliente->id)
-            ->where('pde.deleted_at', '=', null)->get();
+            ->whereNull('pde.deleted_at')
+            ->get();
         if (count($doc_existentes) == 0) {
             $datos['cliente_id'] = $cliente->id;
             $this->crearListaCheck($datos);
