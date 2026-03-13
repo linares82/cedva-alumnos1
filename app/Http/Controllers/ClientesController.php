@@ -99,10 +99,10 @@ class ClientesController extends Controller
             ->where('c.id', '=', $cliente->id)
             ->whereNull('pde.deleted_at')
             ->get();
-        if (count($doc_existentes) == 0) {
-            $datos['cliente_id'] = $cliente->id;
-            $this->crearListaCheck($datos);
-        }
+        //if (count($doc_existentes) == 0) {
+        $datos['cliente_id'] = $cliente->id;
+        $this->crearListaCheck($datos);
+        //}
 
         $de_array = array();
         if ($doc_existentes->isNotEmpty()) {

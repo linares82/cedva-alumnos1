@@ -215,7 +215,10 @@
 
                                 <b class="arrow"></b>
                             </li>
-
+                            @php
+                                //dd(Auth::user()->cliente->plantel);
+                            @endphp
+                            @if(Auth::user()->cliente->plantel->bnd_docs_portal==1)
                             @if(Auth::user()->cliente->bnd_doc_oblig_entregados<>1)
                             <li class="hover">
                                 <a href="{{ route('alumnos.documentos', Auth::user()->cliente->id) }}">
@@ -225,6 +228,7 @@
 
                                 <b class="arrow"></b>
                             </li>
+                            @endif
                             @endif
 
                             <li class="hover">

@@ -82,7 +82,8 @@ class Plantel extends Model
         'bnd_multipagos_activo',
         'bnd_openpay_activo',
         'bnd_mattilda',
-        'archivo_pem'
+        'archivo_pem',
+        'bnd_docs_portal',
     ];
 
     protected $dates = ['deleted_at'];

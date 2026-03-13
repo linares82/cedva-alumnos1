@@ -9,7 +9,7 @@
 
 .zoom {
   transition: transform .2s;
-  width: 250px;
+  width: auto;
   height: 250px;
   margin: 0 auto;
   z-index: 100;
@@ -23,10 +23,11 @@
 }
 </style>
 
+
 <div class="box-body">
     <div class="col-md-3"></div>
         <div class="zoom col-md-6" style="align:">
-            <img src="{{asset('img/reglas_carga_docs.jpeg')}}"  alt="instrucciones_carga_documentos" style="align: center; width: auto; height: 250px;">
+            <img src="{{asset('img/reglas_carga_docs.jpeg')}}" alt="instrucciones_carga_documentos" style="align: center; width: auto; height: 250px; border-radius: 4px;border: 1px solid #1165d3;">
         </div>
     <div class="col-md-3"></div>
     @if (!is_null($cliente->obs_docs) or strlen($cliente->obs_docs)>0)
@@ -40,7 +41,7 @@
         <table class="table table-condensed table-striped">
             <thead>
                 <tr>
-                    <th>Documentos</th><th>Obligatorio</th><th>Link</th>
+                    <th>Documentos</th><th>Link</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,13 +54,6 @@
                 <tr>
                     <td>
                         {{$doc->docAlumno->name}}
-                    </td>
-                    <td>
-                        @if($doc->docAlumno->doc_obligatorio==1)
-                        <label class="label label-success">SI</label>
-                        @else
-                        NO
-                        @endif
                     </td>
                     <td>
                         @if(!is_null($doc->archivo))
@@ -171,7 +165,7 @@ $(document).on("click", ".btn_archivo", function (e) {
         },
         //una vez finalizado correctamente
         success: function (data) {
-            if (confirm('¿Deseas Actualizar la Página?')){
+            if (confirm('Â¿Deseas Actualizar la PÃ¡gina?')){
                 location.reload();
             }
             $(this).text('OK');
