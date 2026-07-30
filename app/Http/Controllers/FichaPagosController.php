@@ -2,68 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use Mail;
-use App\Caja;
-use App\Pago;
-use App\User;
-use App\Param;
-use Exception;
-use XMLWriter;
 use App\Adeudo;
-use App\CajaLn;
-use SoapClient;
-use App\Cliente;
-use App\Message;
-use App\Plantel;
-use App\Seccion;
-use DOMDocument;
-use App\Empleado;
-use Carbon\Carbon;
-use App\UsoFactura;
-use App\PromoPlanLn;
-use App\TipoPersona;
-use SimpleXMLElement;
-use App\RegimenFiscal;
-use GuzzleHttp\Client;
-use App\WebhookOpenpay;
-use App\CuentasEfectivo;
-use App\ImpresionTicket;
-use App\PeticionOpenpay;
-use App\PeticionPaycode;
 use App\AdeudoPagoOnLine;
 use App\AutorizacionBeca;
-use App\SuccessMultipago;
-use Openpay\Data\Openpay;
-use App\NivelEducativoSat;
-
-use App\PeticionMultipago;
-use GuzzleHttp\Middleware;
-
+use App\Caja;
+use App\CajaLn;
+use App\Cliente;
 use App\CombinacionCliente;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
+use App\CuentasEfectivo;
+use App\Empleado;
+use App\ImpresionTicket;
+use App\Inscripcion;
+use App\Material;
+use App\Message;
+use App\NivelEducativoSat;
+use App\Notifications\NotificacionErrorApiFoliosDigitales;
+use App\Pago;
+use App\Param;
+use App\PeticionMultipago;
+use App\PeticionOpenpay;
+use App\PeticionPaycode;
+use App\Plantel;
+use App\PromoPlanLn;
+use App\RegimenFiscal;
+use App\Seccion;
 use App\SerieFolioSimplificado;
-use Illuminate\Http\JsonResponse;
-use Openpay\Data\OpenpayApiError;
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Openpay\Data\OpenpayApiAuthError;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
-use Luecano\NumeroALetras\NumeroALetras;
-use Openpay\Data\OpenpayApiRequestError;
+use App\SuccessMultipago;
+use App\TipoPersona;
+use App\User;
+use App\UsoFactura;
+use App\WebhookOpenpay;
+use Carbon\Carbon;
+use DOMDocument;
+use Exception;
+use Gr4vy\Gr4vyConfig;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-use Openpay\Data\OpenpayApiConnectionError;
+use GuzzleHttp\Middleware;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Luecano\NumeroALetras\NumeroALetras;
+use Mail;
+use Openpay\Data\Openpay;
+use Openpay\Data\OpenpayApiAuthError;
+use Openpay\Data\OpenpayApiConnectionError;
+use Openpay\Data\OpenpayApiError;
+use Openpay\Data\OpenpayApiRequestError;
 use Openpay\Data\OpenpayApiTransactionError;
-use App\Notifications\NotificacionErrorApiFoliosDigitales;
-
-require_once '../vendor/autoload.php';
-
-use Gr4vy\Gr4vyConfig;
+use SimpleXMLElement;
+use SoapClient;
+use XMLWriter;
 
 class FichaPagosController extends Controller
 {
@@ -1845,8 +1841,10 @@ class FichaPagosController extends Controller
         }
 
         $findDataRequest = array(
-            'order_id' => $peticion->porder_id
+            'order_id' => $peticion->porder_id,
+            'status' => 'completed'
         );
+
         //dd($findDataRequest);
 
         $chargeList = $openpay->charges->getList($findDataRequest);
@@ -3778,9 +3776,13 @@ class FichaPagosController extends Controller
                     //"xml" => $xmlFactura
                 );
                 //dd($data);
-                $client = new Client(['base_uri' => $url]);
+                $client = new Client([
+                    'base_uri' => $url,
+                    'verify' => '/usr/share/ca-certificates/factudesk_selfsigned.crt' //Nueva nomenclatura usada
+                ]);
+
                 //$client = new Client(['base_uri' => $url, 'verify' => '/usr/share/ca-certificates/factudesk_selfsigned.crt']);
-                $client->setDefaultOption(['verify' => '/usr/share/ca-certificates/factudesk_selfsigned.crt']);
+                //$client->setDefaultOption(['verify' => '/usr/share/ca-certificates/factudesk_selfsigned.crt']); Anterior nomencaltura
                 $response = $client->post("sellar-y-timbrar/", [
                     // un array con la data de los headers como tipo de peticion, etc.
                     //'headers' => ['foo' => 'bar'],
@@ -4733,5 +4735,20 @@ class FichaPagosController extends Controller
             ->build();
 
         return view('fichaPagos.detalle_mattilda', compact('adeudo_pago_online', 'forma_pagos', 'peticionesOpenpay', 'openpay_url', 'plantel', 'openpay_productivo'));
+    }
+
+    public function material()
+    {
+        $cliente = Cliente::select('id')->where('matricula', Auth::user()->name)->first();
+        $inscripcion = Inscripcion::where('cliente_id', $cliente->id)
+            ->with(['grado'])
+            ->first();
+        $secciones = Seccion::where('name', $inscripcion->grado->seccion)->pluck('id');
+        //dd($secciones);
+        $materiales = Material::whereIn('seccion_id', $secciones)
+            ->whereDate('fecha_disponibilidad', '>', Date('Y-m-d'))
+            ->get();
+        // dd($materiales);
+        return view('fichaPagos.materiales', compact('materiales'));
     }
 }

@@ -215,6 +215,15 @@
 
                                 <b class="arrow"></b>
                             </li>
+
+                            <li class="hover">
+                                <a href="{{ route('fichaAdeudos.material') }}">
+                                    <i class="menu-icon fa fa-list-alt"></i>
+                                    <span class="menu-text">Material</span>
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
                             @php
                                 //dd(Auth::user()->cliente->plantel);
                             @endphp

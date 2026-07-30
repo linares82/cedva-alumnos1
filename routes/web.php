@@ -306,3 +306,11 @@ Route::post(
         'uses' => 'ClientesController@cargarImg'
     )
 )->middleware('auth');
+Route::get(
+    '/fichaAdeudos/material',
+    array(
+        'as' => 'fichaAdeudos.material',
+        //'middleware' => 'permission:users.updatePerfil',
+        'uses' => 'FichaPagosController@material'
+    )
+)->middleware('auth');

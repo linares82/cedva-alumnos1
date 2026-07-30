@@ -89,7 +89,17 @@ return [
             'suppress_php_deprecation_warning' => env('AWS_SUPPRESS_PHP_DEPRECATION_WARNING', true),
             'visiblity' => 'public'
         ],
-
+        'do_materials' => [
+            'driver' => 's3',
+            'root' => 'materials/',
+            'key' => env('DIGITALOCEAN_SPACES_KEY_I'),
+            'secret' => env('DIGITALOCEAN_SPACES_SECRET_I'),
+            'endpoint' => env('DIGITALOCEAN_SPACES_ENDPOINT_I'),
+            'region' => env('DIGITALOCEAN_SPACES_REGION_I'),
+            'bucket' => env('DIGITALOCEAN_SPACES_BUCKET_I'),
+            'suppress_php_deprecation_warning' => env('AWS_SUPPRESS_PHP_DEPRECATION_WARNING', true),
+            'visiblity' => 'public'
+        ],
 
     ],
 
