@@ -6,7 +6,7 @@
     <div class="col-md-4">
         <div class="page-header">
             <h1>
-                Materiales
+                {{ $planEstudios->id }} - Plan de Estudios
                 <small>
                     <i class="ace-icon fa fa-angle-double-right"></i>
 
@@ -17,10 +17,8 @@
     <div class="col-md-8">
         <div class="profile-user-info profile-user-info-striped">
             <div class="profile-info-row">
-                <div class="profile-info-name"> Materiales </div>
-                <div class="profile-info-value">
-                    Facilitamos una lista de los materiales o recursos para tus clases.
-                </div>
+                <div class="profile-info-name"> </div>
+
             </div>
         </div>
     </div>
