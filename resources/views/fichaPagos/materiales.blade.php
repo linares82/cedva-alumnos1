@@ -24,6 +24,7 @@
             </div>
         </div>
     </div>
+    @if(!is_null($materiales))
     <div class="col-md-12">
         <table class="table  table-bordered table-hover">
             <thead>
@@ -43,5 +44,6 @@
             </tbody>
         </table>
     </div>
+    @endif
 </div>
 @endsection

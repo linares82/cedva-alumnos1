@@ -314,3 +314,12 @@ Route::get(
         'uses' => 'FichaPagosController@material'
     )
 )->middleware('auth');
+
+Route::get(
+    '/fichaAdeudos/planEstudios',
+    array(
+        'as' => 'fichaAdeudos.planEstudios',
+        //'middleware' => 'permission:users.updatePerfil',
+        'uses' => 'FichaPagosController@planEstudios'
+    )
+)->middleware('auth');

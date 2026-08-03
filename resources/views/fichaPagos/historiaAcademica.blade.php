@@ -63,20 +63,19 @@
 
                                 @foreach($a->calificaciones as $cali)
                                 <tr>
-
                                     <tr>
                                     @php
                                     //$cali->load('tpoExamen');
                                     //$cali->load('calificacionPonderacions');
                                     @endphp
-                                        <strong>Tipo de examen:{{$cali->tpoExamen->name}} - </strong>
+                                        <strong>Tipo de examen:{{$cali->tpoExamen->name}}  </strong>
                                         @foreach($cali->calificacionPonderacions as $calificacionPonderacion)
-                                            <th class="centrar_texto">{{$calificacionPonderacion->cargaPonderacion->name}}</th>
+                                            <th class="centrar_texto">{{ $calificacionPonderacion->cargaPonderacion->name}} ({{$calificacionPonderacion->ponderacion*100}}%)</th>
                                         @endforeach
-                                        <th>Promedio</th>
+
                                     </tr>
                                     <tr>
-                                        <strong>Calificacion: {{$cali->calificacion}}</strong>
+
                                         @php
                                             $cantidad_materias_validas=0;
                                             $sumatoria_calificacions_validas=0;
@@ -92,15 +91,7 @@
                                             @endphp
                                             @endif
                                         @endforeach
-                                        @if($cantidad_materias_validas>0)
-                                        @if(($sumatoria_calificacions_validas/$cantidad_materias_validas)>=6)
-                                        <td>{{ round($sumatoria_calificacions_validas/$cantidad_materias_validas) }}</td>
-                                        @else
-                                        <td> {{ intdiv(($sumatoria_calificacions_validas/$cantidad_materias_validas),1) }}</td>
-                                        @endif
-                                        @else
-                                            <td>0</td>
-                                        @endif
+
                                     </tr>
                                 <tr>
                                 @php

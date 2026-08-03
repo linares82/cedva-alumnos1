@@ -20,8 +20,18 @@ class Materium extends Model
 
     //Mass Assignment
     protected $fillable = [
-        'ponderacion_id', 'name', 'abreviatura', 'seriada_bnd', 'serie_anterior', 'plantel_id',
-        'usu_alta_id', 'usu_mod_id', 'modulo_id', 'codigo', 'creditos', 'bnd_oficial'
+        'ponderacion_id',
+        'name',
+        'abreviatura',
+        'seriada_bnd',
+        'serie_anterior',
+        'plantel_id',
+        'usu_alta_id',
+        'usu_mod_id',
+        'modulo_id',
+        'codigo',
+        'creditos',
+        'bnd_oficial'
     ];
 
     public function usu_alta()
@@ -48,7 +58,7 @@ class Materium extends Model
 
     // end
 
-    public function serie_anterior()
+    public function serieAnterior()
     {
         return $this->belongsTo('App\Materium', 'serie_anterior', 'id');
     }

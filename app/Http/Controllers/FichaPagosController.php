@@ -11,6 +11,7 @@ use App\Cliente;
 use App\CombinacionCliente;
 use App\CuentasEfectivo;
 use App\Empleado;
+use App\Hacademica;
 use App\ImpresionTicket;
 use App\Inscripcion;
 use App\Material;
@@ -19,13 +20,16 @@ use App\NivelEducativoSat;
 use App\Notifications\NotificacionErrorApiFoliosDigitales;
 use App\Pago;
 use App\Param;
+use App\PeriodoEstudio;
 use App\PeticionMultipago;
 use App\PeticionOpenpay;
 use App\PeticionPaycode;
+use App\PlanEstudio;
 use App\Plantel;
 use App\PromoPlanLn;
 use App\RegimenFiscal;
 use App\Seccion;
+use App\SeccionesCat;
 use App\SerieFolioSimplificado;
 use App\SuccessMultipago;
 use App\TipoPersona;
@@ -4740,15 +4744,38 @@ class FichaPagosController extends Controller
     public function material()
     {
         $cliente = Cliente::select('id')->where('matricula', Auth::user()->name)->first();
+        $materiales = null;
         $inscripcion = Inscripcion::where('cliente_id', $cliente->id)
             ->with(['grado'])
             ->first();
-        $secciones = Seccion::where('name', $inscripcion->grado->seccion)->pluck('id');
-        //dd($secciones);
-        $materiales = Material::whereIn('seccion_id', $secciones)
-            ->whereDate('fecha_disponibilidad', '>', Date('Y-m-d'))
-            ->get();
-        // dd($materiales);
+        $combinacion = CombinacionCliente::where('cliente_id', $cliente->id)->first();
+        //dd($inscripcion->grado->seccion);
+        if (!is_null($inscripcion)) {
+            $secciones = SeccionesCat::where('name', $inscripcion->grado->seccion)->pluck('id');
+            //dd($secciones);
+
+            $materiales = Material::whereIn('secciones_cat_id', $secciones)
+                ->where('ciclo_matricula_id', $combinacion->planPago->ciclo_matricula_id)
+                ->whereDate('fecha_disponibilidad', '>', Date('Y-m-d'))
+                ->get();
+
+            // dd($materiales);
+        }
         return view('fichaPagos.materiales', compact('materiales'));
+    }
+
+    public function planEstudios()
+    {
+        $cliente = Cliente::select('id')->where('matricula', Auth::user()->name)->first();
+        $materia_cliente = Hacademica::where('cliente_id', $cliente->id)->whereNull('deleted_at')->first();
+        //dd($materia_cliente);
+        $periodoEstudios = PeriodoEstudio::find($materia_cliente->periodo_estudio_id);
+        //dd($periodoEstudios);
+        $planEstudios = PlanEstudio::with('periodosEstudio')
+            ->with(['periodosestudio', 'periodosEstudio.materias', 'periodosEstudio.materias.serieAnterior'])
+            ->find($periodoEstudios->planEstudio->id);
+        //dd($planEstudios);
+
+        return view('fichaPagos.planEstudios', compact('planEstudios'));
     }
 }
